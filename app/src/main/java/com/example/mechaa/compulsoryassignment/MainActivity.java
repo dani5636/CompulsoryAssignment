@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     DiceAdapter diceAdapter;
     ArrayList<HistoryEntity> historyEntities;
 
-
+    final int RESULT_CLEAR = 2;
+    int HISTORY_ACTIVITY = 1;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private void moveToHistory(){
         Intent intent = HistoryActivity.getHistoryIntent(this);
         intent.putExtra("History", historyEntities);
-        startActivity(intent);
+        startActivityForResult(intent, HISTORY_ACTIVITY);
     }
     private void rollDices() {
         diceRolls.clear();
@@ -100,5 +101,26 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, // the activity responding
+                                    int resultCode,  // the respond
+                                    Intent data) {   // extra info
+        if (requestCode == HISTORY_ACTIVITY) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    break;
+                case RESULT_CANCELED:
+                    break;
+                case RESULT_CLEAR:
+                    historyEntities.clear();
+                    diceRolls.clear();
+                    txtResult.setText("");
+                    diceAdapter.notifyDataSetChanged();
+                    break;
+                default:
+                    txtResult.setText("Unknown Error");
+            }
+        }
     }
 }
